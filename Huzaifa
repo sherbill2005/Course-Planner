@@ -1,0 +1,16 @@
+Tasks:
+
+Design database schema:
+Users
+Courses
+Prerequisites
+Schedule (user ↔ courses)
+Set up database (PostgreSQL or MongoDB)
+Populate with sample course data
+Ensure backend integration works
+
+Output by Phase 1:
+
+Clean schema
+Sample dataset ready
+Backend successfully reading/writing data
