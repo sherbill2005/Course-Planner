@@ -1,6 +1,6 @@
 Tasks:
 
-Set up backend project (FastAPI or Django)
+Set up backend project (use Next.js framework)
 Design API structure:
 /courses
 /users
