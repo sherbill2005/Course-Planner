@@ -1,0 +1,16 @@
+Tasks:
+
+Set up backend project (FastAPI or Django)
+Design API structure:
+/courses
+/users
+/schedule
+Implement:
+Basic CRUD for courses
+Basic user model (no need for full auth yet if time is tight)
+Connect backend to database
+
+Output by Phase 1:
+
+Running backend server
+APIs returning course data
