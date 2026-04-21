@@ -1,0 +1,13 @@
+Tasks:
+
+Set up frontend (React recommended)
+Build:
+Course list page
+Basic UI to select/add courses
+Connect frontend to backend APIs
+Display course data dynamically
+
+Output by Phase 1:
+
+Working UI showing courses
+Ability to select courses (even if not fully functional yet)
