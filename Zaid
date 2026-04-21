@@ -1,0 +1,12 @@
+Tasks:
+
+Implement basic schedule structure
+Write logic for:
+Time slot handling
+Detecting schedule conflicts
+Work closely with backend + DB 
+
+Output by Phase 1:
+
+Basic timetable logic working
+Conflict detection function (even simple version)
