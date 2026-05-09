@@ -14,7 +14,7 @@ Next steps:
 Weak points to address from latest commit:
 - Mixed auth patterns exist (API + localStorage context); this can cause inconsistent UX.
 - No token/session persistence strategy is finalized yet.
-- Error handling UX is still basic.
+- Error handling user experience (UX) is still basic.
 
 Important configuration to consider:
 - Tech stack: **Next.js App Router, React, TypeScript, Tailwind CSS, Fetch API**
