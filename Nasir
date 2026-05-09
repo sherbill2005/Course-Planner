@@ -1,16 +1,27 @@
-Tasks:
+Tasks (updated after Huzaifa auth commit c54b6d4):
 
-Set up backend project (use Next.js framework)
-Design API structure:
-/courses
-/users
-/schedule
-Implement:
-Basic CRUD for courses
-Basic user model (no need for full auth yet if time is tight)
-Connect backend to database
+Current context:
+- Auth APIs now exist (`/api/register`, `/api/login`) with PostgreSQL + Prisma user table.
+- Backend foundations are now stronger, so your next APIs should be user-aware.
 
-Output by Phase 1:
+Next steps:
+1. Add course and schedule Prisma models with user linkage (owner/student relation).
+2. Implement `/api/courses` CRUD with clean DTOs and validation.
+3. Implement `/api/schedule` endpoints for add/remove/list selected courses.
+4. Ensure APIs can identify the logged-in user context (once auth token/session is introduced).
+5. Provide stable response shapes for frontend and scheduler integration.
 
-Running backend server
-APIs returning course data
+Weak points to address from latest commit:
+- Auth context and backend are not fully integrated yet.
+- No authorization checks exist for course/schedule endpoints yet.
+- Input normalization/validation is still minimal.
+
+Important configuration to consider:
+- Tech stack focus (aligned with root README): **Next.js API Routes, TypeScript, Prisma, PostgreSQL**
+- Follow root `README.md` -> **Required shared configuration** for `.env` and migration setup.
+- Keep route contracts documented and version-stable for Suleman + Zaid.
+
+Phase 1 expected output:
+- Running backend server
+- APIs returning course + schedule data from DB
+- User-linked data flow ready for frontend and scheduling module
