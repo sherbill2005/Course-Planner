@@ -28,6 +28,7 @@ Huzaifa added a Next.js app module with:
 - Keep API contract stable for frontend/backend alignment:
   - `POST /api/register` body: `{ fullName, studentId, password }`
   - `POST /api/login` body: `{ studentId, password }`
+- Note: current repository layout keeps auth module under `./Huzaifa`; update paths if module location changes.
 
 ## Team next steps (from this commit)
 - **Huzaifa (Auth/Backend integration)**: align `AuthContext` with API auth and add session/token handling.
