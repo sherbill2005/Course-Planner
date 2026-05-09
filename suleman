@@ -17,7 +17,7 @@ Weak points to address from latest commit:
 - Error handling user experience (UX) is still basic.
 
 Important configuration to consider:
-- Tech stack: **Next.js App Router, React, TypeScript, Tailwind CSS, Fetch API**
+- Tech stack focus (aligned with root README): **Next.js App Router, React, TypeScript, Tailwind CSS, Fetch API**
 - Validate environment-based API assumptions for local/dev runs.
 - Keep request/response shapes synchronized with backend contracts.
 - Coordinate route protection rules with Huzaifa and Nasir.

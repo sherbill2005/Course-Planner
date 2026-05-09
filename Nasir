@@ -17,9 +17,8 @@ Weak points to address from latest commit:
 - Input normalization/validation is still minimal.
 
 Important configuration to consider:
-- Tech stack: **Next.js API Routes, TypeScript, Prisma, PostgreSQL**
-- Ensure `DATABASE_URL` is set in the active backend module `.env` (currently `./Huzaifa/.env`).
-- Apply Prisma migrations before API tests.
+- Tech stack focus (aligned with root README): **Next.js API Routes, TypeScript, Prisma, PostgreSQL**
+- Follow root `README.md` -> **Required shared configuration** for `.env` and migration setup.
 - Keep route contracts documented and version-stable for Suleman + Zaid.
 
 Phase 1 expected output:

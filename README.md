@@ -23,15 +23,17 @@ Huzaifa added a Next.js app module with:
 5. **Config fragility**: Prisma depends on `DATABASE_URL`; missing env will break DB access.
 
 ## Required shared configuration
-- Create an `.env` file in the active backend module root with a valid `DATABASE_URL` (for current layout: `./Huzaifa/.env`).
-- Run Prisma migration in `./Huzaifa/` before testing auth APIs in this module.
+- Create an `.env` file in `<auth-module-root>` with a valid `DATABASE_URL` (from repository root, current value: `./Huzaifa/.env`).
+- Run Prisma migration in `<auth-module-root>` before testing auth APIs (current value: `./Huzaifa/`).
 - Keep API contract stable for frontend/backend alignment:
   - `POST /api/register` body: `{ fullName, studentId, password }`
   - `POST /api/login` body: `{ studentId, password }`
-- Note: current repository layout keeps auth module under `./Huzaifa`; update paths if module location changes.
 
 ## Team next steps (from this commit)
 - **Huzaifa (Auth/Backend integration)**: align `AuthContext` with API auth and add session/token handling.
 - **Nasir (Backend/Data)**: extend data models and APIs to support courses + schedules tied to authenticated users.
 - **Suleman (Frontend)**: connect frontend flows to auth-protected APIs and handle auth states/errors.
 - **Zaid (Scheduling logic)**: integrate conflict-detection logic with real user course selections from DB.
+
+## Shared references
+- `<auth-module-root>` currently maps to `./Huzaifa` from repository root.

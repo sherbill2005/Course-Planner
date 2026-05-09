@@ -17,7 +17,7 @@ Weak points to address from latest commit:
 - Conflict logic can drift if backend schema changes without alignment.
 
 Important configuration to consider:
-- Tech stack: **TypeScript, React context/state, scheduling utilities, backend API integration**
+- Tech stack focus (aligned with root README): **TypeScript, React context/state, scheduling utilities, backend API integration**
 - Use backend-provided course timing format as the source of truth.
 - Keep conflict logic deterministic and test with realistic sample payloads.
 - Align dependency on authenticated user course selections.
