@@ -18,7 +18,7 @@ Weak points to address from latest commit:
 
 Important configuration to consider:
 - Tech stack: **Next.js API Routes, TypeScript, Prisma, PostgreSQL**
-- Ensure `DATABASE_URL` is set correctly in `Huzaifa/.env`.
+- Ensure `DATABASE_URL` is set correctly in `./Huzaifa/.env` (shared current app module path).
 - Apply Prisma migrations before API tests.
 - Keep route contracts documented and version-stable for Suleman + Zaid.
 

@@ -23,8 +23,8 @@ Huzaifa added a Next.js app module with:
 5. **Config fragility**: Prisma depends on `DATABASE_URL`; missing env will break DB access.
 
 ## Required shared configuration
-- Create `Huzaifa/.env` with a valid `DATABASE_URL` (PostgreSQL).
-- Run Prisma migration in `Huzaifa/` before testing auth APIs.
+- Create `./Huzaifa/.env` with a valid `DATABASE_URL` (PostgreSQL) for the current app module.
+- Run Prisma migration in `./Huzaifa/` before testing auth APIs in this module.
 - Keep API contract stable for frontend/backend alignment:
   - `POST /api/register` body: `{ fullName, studentId, password }`
   - `POST /api/login` body: `{ studentId, password }`
