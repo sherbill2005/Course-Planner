@@ -3,11 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-type LoggedInUser = {
-  id: number;
-  fullName: string;
-  studentId: string;
-};
+import { useAuth } from "@/context/AuthContext";
 
 export default function DashboardLayout({
   children,
@@ -15,27 +11,24 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const [user, setUser] = useState<LoggedInUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { user, logout, isLoading: authLoading } = useAuth();
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
+    setIsClient(true);
+  }, []);
 
-    if (!savedUser) {
+  useEffect(() => {
+    if (isClient && !authLoading && !user) {
       router.push("/");
-      return;
     }
-
-    setUser(JSON.parse(savedUser));
-    setIsLoading(false);
-  }, [router]);
+  }, [isClient, authLoading, user, router]);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    router.push("/");
+    logout();
   };
 
-  if (isLoading) {
+  if (!isClient || authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         Loading...

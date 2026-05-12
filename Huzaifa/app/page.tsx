@@ -4,37 +4,30 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+import { useAuth } from "@/context/AuthContext";
+
 export default function LoginPage() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
  
   const router = useRouter();
+  const { login } = useAuth();
 
  
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setError("");
+  setLoading(true);
 
-  const response = await fetch("/api/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      studentId: id,
-      password: password,
-    }),
-  });
+  const result = await login(id, password);
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    setError(data.message || "Invalid Student ID or Password");
+  if (!result.success) {
+    setError(result.message || "Invalid Student ID or Password");
+    setLoading(false);
     return;
   }
-
-  localStorage.setItem("user", JSON.stringify(data.user));
 
   router.push("/dashboard");
 };
@@ -78,9 +71,10 @@ const handleSubmit = async (e: React.FormEvent) => {
 
           <button
             type="submit"
-            className="w-full rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            disabled={loading}
+            className="w-full rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-60"
           >
-            Sign In
+            {loading ? "Signing In..." : "Sign In"}
           </button>
         </form>
 

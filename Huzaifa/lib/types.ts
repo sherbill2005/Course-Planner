@@ -15,8 +15,7 @@ export interface Course {
 }
 
 export interface User {
-  id: string;
-  name: string;
-  password: string; // Stored in plain text for this frontend-only mockup
-  enrolledCourseIds: string[];
+  id: number;
+  fullName: string;
+  studentId: string;
 }

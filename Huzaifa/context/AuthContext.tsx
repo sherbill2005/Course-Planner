@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 
 interface AuthContextType {
   user: User | null;
-  login: (id: string, password: string) => boolean;
-  register: (name: string, id: string, password: string) => boolean;
+  login: (id: string, password: string) => Promise<{ success: boolean; message?: string }>;
+  register: (name: string, id: string, password: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   isLoading: boolean;
 }
@@ -27,33 +27,50 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   }, []);
 
-  const login = (id: string, password: string): boolean => {
-    const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
-    const foundUser = users.find((u) => u.id === id && u.password === password);
-    
-    if (foundUser) {
-      setUser(foundUser);
-      localStorage.setItem("currentUser", JSON.stringify(foundUser));
-      return true;
+  const login = async (studentId: string, password: string): Promise<{ success: boolean; message?: string }> => {
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentId, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setUser(data.user);
+        localStorage.setItem("currentUser", JSON.stringify(data.user));
+        return { success: true };
+      } else {
+        return { success: false, message: data.message || "Login failed" };
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      return { success: false, message: "An error occurred during login" };
     }
-    return false;
   };
 
-  const register = (name: string, id: string, password: string): boolean => {
-    const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
-    
-    if (users.find((u) => u.id === id)) {
-      return false; // User already exists
-    }
+  const register = async (fullName: string, studentId: string, password: string): Promise<{ success: boolean; message?: string }> => {
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, studentId, password }),
+      });
 
-    const newUser: User = { id, name, password, enrolledCourseIds: [] };
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-    
-    // Automatically login after registration
-    setUser(newUser);
-    localStorage.setItem("currentUser", JSON.stringify(newUser));
-    return true;
+      const data = await response.json();
+
+      if (response.ok) {
+        setUser(data.user);
+        localStorage.setItem("currentUser", JSON.stringify(data.user));
+        return { success: true };
+      } else {
+        return { success: false, message: data.message || "Registration failed" };
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      return { success: false, message: "An error occurred during registration" };
+    }
   };
 
   const logout = () => {

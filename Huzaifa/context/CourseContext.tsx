@@ -19,7 +19,8 @@ export const CourseProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   useEffect(() => {
     if (user) {
-      const savedEnrolledIds = user.enrolledCourseIds || [];
+      // Temporarily disabled since DB doesn't have course data yet
+      const savedEnrolledIds: string[] = [];
       const courses = AVAILABLE_COURSES.filter((c) => savedEnrolledIds.includes(c.id));
       setEnrolledCourses(courses);
     } else {
@@ -63,27 +64,12 @@ export const CourseProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     const updatedCourses = [...enrolledCourses, courseToAdd];
     setEnrolledCourses(updatedCourses);
-    updateUserEnrollment(updatedCourses.map(c => c.id));
     return { success: true, message: "Successfully enrolled" };
   };
 
   const removeCourse = (courseId: string) => {
     const updatedCourses = enrolledCourses.filter((c) => c.id !== courseId);
     setEnrolledCourses(updatedCourses);
-    updateUserEnrollment(updatedCourses.map(c => c.id));
-  };
-
-  const updateUserEnrollment = (courseIds: string[]) => {
-    if (!user) return;
-    const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
-    const updatedUsers = users.map((u) => 
-      u.id === user.id ? { ...u, enrolledCourseIds: courseIds } : u
-    );
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-    
-    // Update current user session as well
-    const updatedCurrentUser = { ...user, enrolledCourseIds: courseIds };
-    localStorage.setItem("currentUser", JSON.stringify(updatedCurrentUser));
   };
 
   return (
