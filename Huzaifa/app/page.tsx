@@ -3,55 +3,51 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
  
+
   const router = useRouter();
+  const { login, error, isLoading } = useAuth();
 
- 
-const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
-  setError("");
 
-  const response = await fetch("/api/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      studentId: id,
-      password: password,
-    }),
-  });
+  const success = await login(id, password);
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    setError(data.message || "Invalid Student ID or Password");
-    return;
+  if (success) {
+    router.push("/dashboard");
   }
-
-  localStorage.setItem("user", JSON.stringify(data.user));
-
-  router.push("/dashboard");
 };
 
- 
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 px-4 dark:bg-black">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl dark:bg-zinc-900">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-zinc-900 dark:text-white">Student Login</h1>
-          <p className="mt-2 text-zinc-600 dark:text-zinc-400">Access your course planner</p>
+          <h1 className="text-3xl font-bold text-zinc-900 dark:text-white">
+            Student Login
+          </h1>
+          <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+            Access your course planner
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">Student ID</label>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              Student ID
+            </label>
             <input
               type="text"
               required
@@ -63,7 +59,9 @@ const handleSubmit = async (e: React.FormEvent) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">Password</label>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              Password
+            </label>
             <input
               type="password"
               required
@@ -74,7 +72,11 @@ const handleSubmit = async (e: React.FormEvent) => {
             />
           </div>
 
-          {error && <p className="text-sm font-medium text-red-500">{error}</p>}
+          {error && (
+  <p className="text-sm font-medium text-red-500">
+    {error}
+  </p>
+)}
 
           <button
             type="submit"
@@ -86,7 +88,10 @@ const handleSubmit = async (e: React.FormEvent) => {
 
         <p className="mt-6 text-center text-sm text-zinc-600 dark:text-zinc-400">
           Don't have an account?{" "}
-          <Link href="/register" className="font-semibold text-blue-600 hover:underline">
+          <Link
+            href="/register"
+            className="font-semibold text-blue-600 hover:underline"
+          >
             Register here
           </Link>
         </p>

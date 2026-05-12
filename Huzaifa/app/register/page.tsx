@@ -3,47 +3,27 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const { register, error } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
-    try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fullName: name,
-          studentId: id,
-          password: password,
-        }),
-      });
+    const success = await register(name, id, password);
 
-      const data = await response.json();
+    setLoading(false);
 
-      if (!response.ok) {
-        setError(data.message || "Registration failed");
-        setLoading(false);
-        return;
-      }
-
-      setLoading(false);
-      router.push("/");
-    } catch (error) {
-      setError("Something went wrong");
-      setLoading(false);
+    if (success) {
+      router.push("/dashboard");
     }
   };
 

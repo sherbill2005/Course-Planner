@@ -1,69 +1,137 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { User } from "../lib/types";
 import { useRouter } from "next/navigation";
 
+type AuthUser = {
+  id: number;
+  fullName: string;
+  studentId: string;
+};
+
 interface AuthContextType {
-  user: User | null;
-  login: (id: string, password: string) => boolean;
-  register: (name: string, id: string, password: string) => boolean;
+  user: AuthUser | null;
+  login: (studentId: string, password: string) => Promise<boolean>;
+  register: (fullName: string, studentId: string, password: string) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
+  error: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
   const router = useRouter();
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("currentUser");
+    const savedUser = localStorage.getItem("user");
+
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
+
     setIsLoading(false);
   }, []);
 
-  const login = (id: string, password: string): boolean => {
-    const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
-    const foundUser = users.find((u) => u.id === id && u.password === password);
-    
-    if (foundUser) {
-      setUser(foundUser);
-      localStorage.setItem("currentUser", JSON.stringify(foundUser));
+  const login = async (studentId: string, password: string): Promise<boolean> => {
+    setError("");
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          studentId: studentId.trim(),
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Invalid Student ID or Password");
+        return false;
+      }
+
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+
+      setUser(data.user);
       return true;
+    } catch (error) {
+      setError("Something went wrong during login");
+      return false;
     }
-    return false;
   };
 
-  const register = (name: string, id: string, password: string): boolean => {
-    const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
-    
-    if (users.find((u) => u.id === id)) {
-      return false; // User already exists
-    }
+  const register = async (
+    fullName: string,
+    studentId: string,
+    password: string
+  ): Promise<boolean> => {
+    setError("");
 
-    const newUser: User = { id, name, password, enrolledCourseIds: [] };
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-    
-    // Automatically login after registration
-    setUser(newUser);
-    localStorage.setItem("currentUser", JSON.stringify(newUser));
-    return true;
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName: fullName.trim(),
+          studentId: studentId.trim(),
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Registration failed");
+        return false;
+      }
+
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+
+      setUser(data.user);
+      return true;
+    } catch (error) {
+      setError("Something went wrong during registration");
+      return false;
+    }
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("currentUser");
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
     router.push("/");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, isLoading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        isLoading,
+        error,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -71,8 +139,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
+
   return context;
 };

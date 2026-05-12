@@ -8,9 +8,53 @@ datasource db {
 }
 
 model User {
+  id          Int      @id @default(autoincrement())
+  fullName    String
+  studentId   String   @unique
+  password    String
+  createdAt   DateTime @default(now())
+
+  enrollments Enrollment[]
+}
+model Course {
+  id          Int      @id @default(autoincrement())
+  courseCode String   @unique
+  title       String
+  instructor  String
+  credits     Int
+  semester    Int
+  day         String?
+  startTime   String?
+  endTime     String?
+  createdAt   DateTime @default(now())
+
+  prerequisites Prerequisite[] @relation("CoursePrerequisites")
+  requiredFor   Prerequisite[] @relation("RequiredCourse")
+
+  enrollments Enrollment[]
+}
+
+model Prerequisite {
+  id                   Int @id @default(autoincrement())
+
+  courseId             Int
+  prerequisiteCourseId Int
+
+  course               Course @relation("CoursePrerequisites", fields: [courseId], references: [id])
+  prerequisiteCourse   Course @relation("RequiredCourse", fields: [prerequisiteCourseId], references: [id])
+
+  @@unique([courseId, prerequisiteCourseId])
+}
+
+model Enrollment {
   id        Int      @id @default(autoincrement())
-  fullName  String
-  studentId String   @unique
-  password  String
+  userId    Int
+  courseId  Int
+  status    String   @default("planned")
   createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
 }

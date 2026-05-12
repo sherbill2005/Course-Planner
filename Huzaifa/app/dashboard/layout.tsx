@@ -1,44 +1,31 @@
 "use client";
 
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-
-type LoggedInUser = {
-  id: number;
-  fullName: string;
-  studentId: string;
-};
+import { useEffect } from "react";
+import Sidebar from "@/components/Sidebar";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { user, isLoading } = useAuth();
   const router = useRouter();
-  const [user, setUser] = useState<LoggedInUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-
-    if (!savedUser) {
+    if (!isLoading && !user) {
       router.push("/");
-      return;
     }
-
-    setUser(JSON.parse(savedUser));
-    setIsLoading(false);
-  }, [router]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    router.push("/");
-  };
+  }, [user, isLoading, router]);
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        Loading...
+      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
+        <div className="flex flex-col items-center gap-2">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+          <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Loading your dashboard...</p>
+        </div>
       </div>
     );
   }
@@ -48,41 +35,30 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-black">
-      <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="text-xl font-bold text-zinc-900 dark:text-white">
+    <div className="flex min-h-screen bg-zinc-50 dark:bg-black">
+      <Sidebar />
+
+      <div className="flex flex-1 flex-col pl-64">
+        <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/80 px-8 py-4 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/80">
+          <div className="flex items-center justify-between">
+            <h1 className="text-lg font-semibold text-zinc-900 dark:text-white">
               University Course Planner
             </h1>
-            <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-              Semester: Spring 2026
-            </span>
-          </div>
 
-          <div className="flex items-center gap-6">
-            <div className="text-right">
-              <p className="text-sm font-semibold text-zinc-900 dark:text-white">
-                {user.fullName}
-              </p>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                ID: {user.studentId}
-              </p>
+            <div className="flex items-center gap-4">
+              <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                Spring 2026 Semester
+              </span>
             </div>
-
-            <button
-              onClick={handleLogout}
-              className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-            >
-              Logout
-            </button>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <main className="flex-1 px-6 py-8">
-        <div className="mx-auto max-w-7xl">{children}</div>
-      </main>
+        <main className="flex-1 p-8">
+          <div className="mx-auto max-w-6xl">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

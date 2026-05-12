@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-
+import jwt from "jsonwebtoken";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -27,7 +27,12 @@ export async function POST(request: Request) {
         { status: 409 }
       );
     }
-
+if (password.length < 6) {
+  return NextResponse.json(
+    { message: "Password must be at least 6 characters long" },
+    { status: 400 }
+  );
+}
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await prisma.user.create({
@@ -37,18 +42,29 @@ export async function POST(request: Request) {
         password: hashedPassword,
       },
     });
+    const token = jwt.sign(
+  {
+    id: newUser.id,
+    studentId: newUser.studentId,
+  },
+  process.env.JWT_SECRET!,
+  {
+    expiresIn: "1d",
+  }
+);
 
     return NextResponse.json(
-      {
-        message: "Student registered successfully",
-        user: {
-          id: newUser.id,
-          fullName: newUser.fullName,
-          studentId: newUser.studentId,
-        },
-      },
-      { status: 201 }
-    );
+  {
+    message: "Student registered successfully",
+    user: {
+      id: newUser.id,
+      fullName: newUser.fullName,
+      studentId: newUser.studentId,
+    },
+    token,
+  },
+  { status: 201 }
+);
   } catch (error) {
     console.log("REGISTER_ERROR:", error);
 
