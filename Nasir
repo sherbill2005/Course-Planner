@@ -1,27 +1,11 @@
-Tasks (updated after Huzaifa auth commit c54b6d4):
-
-Current context:
-- Auth APIs now exist (`/api/register`, `/api/login`) with PostgreSQL + Prisma user table.
-- Backend foundations are now stronger, so your next APIs should be user-aware.
+Tasks (Phase 2 - Course Management):
 
 Next steps:
-1. Add course and schedule Prisma models with user linkage (owner/student relation).
-2. Implement `/api/courses` CRUD with clean DTOs and validation.
-3. Implement `/api/schedule` endpoints for add/remove/list selected courses.
-4. Ensure APIs can identify the logged-in user context (once auth token/session is introduced).
-5. Provide stable response shapes for frontend and scheduler integration.
+1. Update `schema.prisma` to include the `Course` model (referencing `lib/types.ts`).
+2. Create a `prisma/seed.ts` file to populate the Neon database with the courses currently in `lib/dummyData.ts`.
+3. Goal: Make sure everyone is pulling course data from the DB instead of a local JS file.
+4. Ensure the database schema supports the link between Users and their Enrolled Courses.
 
-Weak points to address from latest commit:
-- Auth context and backend are not fully integrated yet.
-- No authorization checks exist for course/schedule endpoints yet.
-- Input normalization/validation is still minimal.
-
-Important configuration to consider:
-- Tech stack focus (aligned with root README): **Next.js API Routes, TypeScript, Prisma, PostgreSQL**
-- Follow root `README.md` -> **Required shared configuration** for `.env` and migration setup.
-- Keep route contracts documented and version-stable for Suleman + Zaid.
-
-Phase 1 expected output:
-- Running backend server
-- APIs returning course + schedule data from DB
-- User-linked data flow ready for frontend and scheduling module
+Important:
+- Coordinate with Huzaifa on the relation between User and Course models.
+- Coordinate with Zaid on the time/session format to ensure scheduling logic works.

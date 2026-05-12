@@ -1,0 +1,11 @@
+Tasks (Phase 2 - Course Management):
+
+Next steps:
+1. Create `POST /api/courses/enroll` and `DELETE /api/courses/enroll` endpoints.
+2. Secure these routes so only the logged-in user can modify their own schedule.
+3. Integrate Zaid's conflict-detection logic into the enrollment API to prevent invalid schedules.
+4. Ensure the API returns the updated list of enrolled courses after any change.
+
+Important:
+- Coordinate with Nasir on the database relations.
+- Keep the API response consistent for Suleman's frontend.

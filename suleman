@@ -1,28 +1,11 @@
-Tasks (updated after Huzaifa auth commit c54b6d4):
-
-Current context:
-- Login and registration pages and APIs are now available.
-- Frontend should now shift from static flows to API-driven authenticated flow.
+Tasks (Phase 2 - Course Management):
 
 Next steps:
-1. Integrate login/register UI with backend responses and consistent error states.
-2. Add protected-route behavior for dashboard/course pages.
-3. Build course listing and selection UI from `/api/courses` (once Nasir finalizes).
-4. Add loading, empty, and failure states for all data-fetching screens.
-5. Align local user state with real backend auth/session approach.
+1. Update the Dashboard to fetch "Available Courses" from a new API (to be created by Nasir/Huzaifa).
+2. Implement "Enroll" and "Remove" buttons that call backend APIs instead of local state.
+3. Replace all remaining `localStorage` mock logic with actual state from the backend.
+4. Add better feedback (toasts/notifications) when a course is successfully added or a clash is detected.
 
-Weak points to address from latest commit:
-- Mixed auth patterns exist (API + localStorage context); this can cause inconsistent UX.
-- No token/session persistence strategy is finalized yet.
-- Error handling user experience (UX) is still basic.
-
-Important configuration to consider:
-- Tech stack focus (aligned with root README): **Next.js App Router, React, TypeScript, Tailwind CSS, Fetch API**
-- Validate environment-based API assumptions for local/dev runs.
-- Keep request/response shapes synchronized with backend contracts.
-- Coordinate route protection rules with Huzaifa and Nasir.
-
-Phase 1 expected output:
-- Working UI showing courses
-- Auth-aware course selection flow
-- Stable frontend integration with backend APIs
+Important:
+- Coordinate with Huzaifa on the API endpoint names.
+- Ensure the UI handles "Loading" states while waiting for the Cloud DB.

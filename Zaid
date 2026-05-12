@@ -1,28 +1,11 @@
-Tasks (updated after Huzaifa auth commit c54b6d4):
-
-Current context:
-- User registration/login with PostgreSQL now exists.
-- Scheduling logic should now be implemented against real selected-course data per user.
+Tasks (Phase 2 - Course Management):
 
 Next steps:
-1. Define normalized timeslot structure compatible with backend course/session schema.
-2. Implement conflict detection against actual selected courses (not hardcoded data).
-3. Expose scheduler helper utilities that frontend can consume safely.
-4. Add edge-case handling (overlaps, same-day multi-slot, duplicate enrollments).
-5. Coordinate final schedule API contract with Nasir before lock-in.
+1. Move the `checkClash` logic from `CourseContext.tsx` to a server-side utility or a dedicated scheduling service.
+2. Ensure the database/backend enforces that a student cannot enroll in two clashing courses.
+3. Optimize the conflict detection to handle larger course lists if necessary.
+4. Provide a utility for the frontend to visually highlight clashing courses before the user clicks "Enroll".
 
-Weak points to address from latest commit:
-- Current app still includes local/dummy state paths that may bypass real data.
-- No strict schedule data contract is finalized yet.
-- Conflict logic can drift if backend schema changes without alignment.
-
-Important configuration to consider:
-- Tech stack focus (aligned with root README): **TypeScript, React context/state, scheduling utilities, backend API integration**
-- Use backend-provided course timing format as the source of truth.
-- Keep conflict logic deterministic and test with realistic sample payloads.
-- Align dependency on authenticated user course selections.
-
-Phase 1 expected output:
-- Basic timetable logic working
-- Conflict detection function integrated with real user-selected courses
-- Ready-to-connect scheduling layer for frontend
+Important:
+- Coordinate with Nasir on the session time format in the database.
+- Work with Huzaifa to integrate the clash check into the `POST /api/courses/enroll` endpoint.
