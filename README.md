@@ -15,10 +15,12 @@ The objective of this project is to design and develop a web-based University Co
 
 ## Team Next Steps: Phase 2 (Course & Schedule Management)
 
-### 1. Nasir (Database & Data Seeding)
-- **Task**: Update `schema.prisma` to include the `Course` model (referencing `lib/types.ts`).
-- **Task**: Create a `prisma/seed.ts` file to populate the Neon database with the courses currently in `lib/dummyData.ts`.
-- **Goal**: Make sure everyone is pulling course data from the DB instead of a local JS file.
+### 1. Nasir (Database & Data Seeding) ✅ COMPLETED
+- **Task**: Update `schema.prisma` to include the `Course` model (referencing `lib/types.ts`). ✅
+- **Task**: Create a `prisma/seed.ts` file to populate the Neon database with the courses currently in `lib/dummyData.ts`. ✅
+- **Goal**: Make sure everyone is pulling course data from the DB instead of a local JS file. ✅
+- **Added**: `Course`, `CourseSession`, and `Enrollment` models with proper relations.
+- **Added**: 6 courses seeded into the Neon database from `dummyData.ts`.
 
 ### 2. Suleman (Frontend & Enrollment UI)
 - **Task**: Update the Dashboard to fetch "Available Courses" from a new API (to be created by Nasir/Huzaifa).

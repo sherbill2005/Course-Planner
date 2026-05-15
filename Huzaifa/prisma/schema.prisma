@@ -8,9 +8,39 @@ datasource db {
 }
 
 model User {
+  id          Int          @id @default(autoincrement())
+  fullName    String
+  studentId   String       @unique
+  password    String
+  createdAt   DateTime     @default(now())
+  enrollments Enrollment[]
+}
+
+model Course {
+  id          String          @id
+  title       String
+  instructor  String
+  credits     Int
+  sessions    CourseSession[]
+  enrollments Enrollment[]
+}
+
+model CourseSession {
+  id        Int    @id @default(autoincrement())
+  day       String
+  startTime String
+  endTime   String
+  courseId  String
+  course    Course @relation(fields: [courseId], references: [id])
+}
+
+model Enrollment {
   id        Int      @id @default(autoincrement())
-  fullName  String
-  studentId String   @unique
-  password  String
+  userId    Int
+  courseId  String
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
 }
