@@ -30,7 +30,7 @@ export async function POST(request: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await prisma.user.create({
+    await prisma.user.create({
       data: {
         fullName,
         studentId,
@@ -39,16 +39,11 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(
-      {
-        message: "Student registered successfully",
-        user: {
-          id: newUser.id,
-          fullName: newUser.fullName,
-          studentId: newUser.studentId,
-        },
-      },
-      { status: 201 }
-    );
+  {
+    message: "Student registered successfully. Please login now.",
+  },
+  { status: 201 }
+);
   } catch (error) {
     console.log("REGISTER_ERROR:", error);
 

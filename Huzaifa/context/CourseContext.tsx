@@ -1,79 +1,199 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Course, CourseSession, User } from "../lib/types";
-import { AVAILABLE_COURSES } from "../lib/dummyData";
+import { Course } from "../lib/types";
 import { useAuth } from "./AuthContext";
 
 interface CourseContextType {
+  availableCourses: Course[];
   enrolledCourses: Course[];
-  addCourse: (courseId: string) => { success: boolean; message: string };
-  removeCourse: (courseId: string) => void;
+  loading: boolean;
+  addCourse: (courseId: string) => Promise<{ success: boolean; message: string }>;
+  removeCourse: (courseId: string) => Promise<{ success: boolean; message: string }>;
 }
 
 const CourseContext = createContext<CourseContextType | undefined>(undefined);
 
 export const CourseProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
+
+  const [availableCourses, setAvailableCourses] = useState<Course[]>([]);
   const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchAvailableCourses = async () => {
+    try {
+      const response = await fetch("/api/courses");
+      const data = await response.json();
+
+      if (response.ok) {
+        setAvailableCourses(data);
+      } else {
+        console.error("Courses fetch failed:", data.error);
+      }
+    } catch (error) {
+      console.error("Courses fetch error:", error);
+    }
+  };
+
+  const fetchEnrolledCourses = async () => {
+    try {
+      if (!user?.id) {
+        setEnrolledCourses([]);
+        return;
+      }
+
+      const response = await fetch(`/api/enrollments?userId=${user.id}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        setEnrolledCourses(data);
+      } else {
+        console.error("Enrolled courses fetch failed:", data.error);
+      }
+    } catch (error) {
+      console.error("Enrolled courses fetch error:", error);
+    }
+  };
 
   useEffect(() => {
-    if (user) {
-      // Temporarily disabled since DB doesn't have course data yet
-      const savedEnrolledIds: string[] = [];
-      const courses = AVAILABLE_COURSES.filter((c) => savedEnrolledIds.includes(c.id));
-      setEnrolledCourses(courses);
-    } else {
-      setEnrolledCourses([]);
+    async function loadCourses() {
+      setLoading(true);
+
+      await fetchAvailableCourses();
+
+      if (user?.id) {
+        await fetchEnrolledCourses();
+      } else {
+        setEnrolledCourses([]);
+      }
+
+      setLoading(false);
     }
+
+    loadCourses();
   }, [user]);
 
-  const checkClash = (newCourse: Course): { hasClash: boolean; clashingCourse?: string } => {
-    for (const enrolled of enrolledCourses) {
-      for (const enrolledSession of enrolled.sessions) {
-        for (const newSession of newCourse.sessions) {
-          if (enrolledSession.day === newSession.day) {
-            const start1 = enrolledSession.startTime;
-            const end1 = enrolledSession.endTime;
-            const start2 = newSession.startTime;
-            const end2 = newSession.endTime;
+  const addCourse = async (
+    courseId: string
+  ): Promise<{ success: boolean; message: string }> => {
+    if (!user?.id) {
+      return {
+        success: false,
+        message: "Please login first",
+      };
+    }
 
-            // Check if intervals [start1, end1] and [start2, end2] overlap
-            if (start1 < end2 && start2 < end1) {
-              return { hasClash: true, clashingCourse: enrolled.title };
-            }
-          }
-        }
+    try {
+      const response = await fetch("/api/enrollments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          courseId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return {
+          success: false,
+          message: data.error || "Failed to enroll course",
+        };
       }
+
+      if (data.course) {
+        setEnrolledCourses((prev) => {
+          const alreadyExists = prev.some(
+            (course) => course.id === data.course.id
+          );
+
+          if (alreadyExists) {
+            return prev;
+          }
+
+          return [...prev, data.course];
+        });
+      } else {
+        await fetchEnrolledCourses();
+      }
+
+      return {
+        success: true,
+        message: data.message || "Successfully enrolled",
+      };
+    } catch (error) {
+      console.error("Add course error:", error);
+
+      return {
+        success: false,
+        message: "Something went wrong while enrolling course",
+      };
     }
-    return { hasClash: false };
   };
 
-  const addCourse = (courseId: string): { success: boolean; message: string } => {
-    const courseToAdd = AVAILABLE_COURSES.find((c) => c.id === courseId);
-    if (!courseToAdd) return { success: false, message: "Course not found" };
-
-    if (enrolledCourses.find((c) => c.id === courseId)) {
-      return { success: false, message: "Already enrolled in this course" };
+  const removeCourse = async (
+    courseId: string
+  ): Promise<{ success: boolean; message: string }> => {
+    if (!user?.id) {
+      return {
+        success: false,
+        message: "Please login first",
+      };
     }
 
-    const clash = checkClash(courseToAdd);
-    if (clash.hasClash) {
-      return { success: false, message: `Clash detected with ${clash.clashingCourse}` };
+    try {
+      const response = await fetch("/api/enrollments", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          courseId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return {
+          success: false,
+          message: data.error || "Failed to remove course",
+        };
+      }
+
+      setEnrolledCourses((prev) =>
+        prev.filter((course) => course.id !== courseId)
+      );
+
+      return {
+        success: true,
+        message: data.message || "Course removed successfully",
+      };
+    } catch (error) {
+      console.error("Remove course error:", error);
+
+      return {
+        success: false,
+        message: "Something went wrong while removing course",
+      };
     }
-
-    const updatedCourses = [...enrolledCourses, courseToAdd];
-    setEnrolledCourses(updatedCourses);
-    return { success: true, message: "Successfully enrolled" };
-  };
-
-  const removeCourse = (courseId: string) => {
-    const updatedCourses = enrolledCourses.filter((c) => c.id !== courseId);
-    setEnrolledCourses(updatedCourses);
   };
 
   return (
-    <CourseContext.Provider value={{ enrolledCourses, addCourse, removeCourse }}>
+    <CourseContext.Provider
+      value={{
+        availableCourses,
+        enrolledCourses,
+        loading,
+        addCourse,
+        removeCourse,
+      }}
+    >
       {children}
     </CourseContext.Provider>
   );
@@ -81,8 +201,10 @@ export const CourseProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
 export const useCourses = () => {
   const context = useContext(CourseContext);
+
   if (context === undefined) {
-    throw new Error("useCourses must be used within a CourseProvider");
+    throw new Error("useCourses must be used within CourseProvider");
   }
+
   return context;
 };
