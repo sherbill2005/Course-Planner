@@ -5,18 +5,23 @@ export async function GET() {
   try {
     const courses = await prisma.course.findMany({
       include: {
-        sessions: true,
+        prerequisites: {
+          include: {
+            prerequisiteCourse: true,
+          },
+        },
       },
       orderBy: {
-        id: "asc",
+        semester: "asc",
       },
     });
 
-    return NextResponse.json(courses);
+    return NextResponse.json(courses, { status: 200 });
   } catch (error) {
-    console.error("Courses error:", error);
+    console.log("GET_COURSES_ERROR:", error);
+
     return NextResponse.json(
-      { error: "Failed to fetch courses" },
+      { message: "Failed to fetch courses" },
       { status: 500 }
     );
   }
