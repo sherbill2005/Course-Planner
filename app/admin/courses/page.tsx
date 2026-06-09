@@ -21,6 +21,9 @@ export default function ManageCoursesPage() {
   const [code, setCode] = useState("");
   const [instructor, setInstructor] = useState("");
   const [credits, setCredits] = useState("3");
+  const [day, setDay] = useState("Monday");
+  const [startTime, setStartTime] = useState("09:00");
+  const [endTime, setEndTime] = useState("10:30");
   const [showForm, setShowForm] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [successMsg, setSuccessMsg] = useState("");
@@ -67,6 +70,9 @@ export default function ManageCoursesPage() {
         instructor: instructor.trim(),
         credits: Number(credits),
         semester: 1,
+        day,
+        startTime,
+        endTime,
       }),
     });
 
@@ -154,6 +160,20 @@ export default function ManageCoursesPage() {
               <select value={credits} onChange={(e) => setCredits(e.target.value)} className="h-10 w-full rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 shadow-sm outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100">
                 {[1,2,3,4,5].map((n) => <option key={n} value={n}>{n}</option>)}
               </select>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-zinc-700">Day</label>
+              <select value={day} onChange={(e) => setDay(e.target.value)} className="h-10 w-full rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 shadow-sm outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100">
+                {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((d) => <option key={d} value={d}>{d}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-zinc-700">Start Time</label>
+              <input required type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="h-10 w-full rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 shadow-sm outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-zinc-700">End Time</label>
+              <input required type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="h-10 w-full rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 shadow-sm outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
             </div>
             <div className="flex gap-3 sm:col-span-2">
               <button type="submit" className="rounded-lg bg-violet-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-violet-700">Save Course</button>

@@ -6,36 +6,41 @@ import jwt from "jsonwebtoken";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    console.log("--- LOGIN ATTEMPT ---");
+    console.log("Raw Body:", body);
 
     const studentId = body.studentId?.trim();
     const password = body.password;
-    console.log("LOGIN BODY:", body);
-console.log("STUDENT ID RECEIVED:", studentId);
-console.log("PASSWORD RECEIVED:", password);
 
     if (!studentId || !password) {
+      console.log("Login failed: Missing studentId or password");
       return NextResponse.json(
         { message: "Student ID and password are required" },
         { status: 400 }
       );
     }
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: {
-        studentId: studentId,
+        studentId: {
+          equals: studentId,
+          mode: 'insensitive'
+        },
       },
     });
-    console.log("USER FOUND:", user);
-
+    
     if (!user) {
+      console.log(`Login failed: No user found with ID "${studentId}"`);
       return NextResponse.json(
         { message: "Invalid Student ID or Password" },
         { status: 401 }
       );
     }
 
+    console.log(`User found: ${user.studentId} (ID: ${user.id})`);
+
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    console.log("PASSWORD MATCH:", isPasswordCorrect);
+    console.log("Password Match:", isPasswordCorrect);
 
     if (!isPasswordCorrect) {
       return NextResponse.json(

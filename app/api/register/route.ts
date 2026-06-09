@@ -6,7 +6,8 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const { fullName, studentId, password } = body;
+    const { fullName, password } = body;
+    const studentId = body.studentId?.trim().toLowerCase();
 
     if (!fullName || !studentId || !password) {
       return NextResponse.json(

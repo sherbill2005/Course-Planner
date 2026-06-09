@@ -15,26 +15,11 @@ type CourseSession = {
 export default function Timetable() {
   const { enrolledCourses } = useCourses();
 
-  const fallbackSlots: CourseSession[] = [
-    { day: "Monday", startTime: "08:00", endTime: "09:00" },
-    { day: "Tuesday", startTime: "09:00", endTime: "10:00" },
-    { day: "Wednesday", startTime: "10:00", endTime: "11:00" },
-    { day: "Thursday", startTime: "11:00", endTime: "12:00" },
-    { day: "Friday", startTime: "12:00", endTime: "13:00" },
-    { day: "Monday", startTime: "13:00", endTime: "14:00" },
-    { day: "Tuesday", startTime: "14:00", endTime: "15:00" },
-    { day: "Wednesday", startTime: "15:00", endTime: "16:00" },
-  ];
-
-  const coursesWithSessions = enrolledCourses.map((course, index) => {
-    const realSessions = Array.isArray(course.sessions) ? course.sessions : [];
-
+  const coursesWithSessions = enrolledCourses.map((course) => {
+    console.log(`[Timetable] Rendering "${course.title}" with ${course.sessions.length} sessions`);
     return {
       ...course,
-      sessions:
-        realSessions.length > 0
-          ? realSessions
-          : [fallbackSlots[index % fallbackSlots.length]],
+      sessions: Array.isArray(course.sessions) ? course.sessions : [],
     };
   });
 
@@ -126,12 +111,6 @@ export default function Timetable() {
                       <p className="mt-1 opacity-80">
                         {session.startTime} - {session.endTime}
                       </p>
-
-                      {(!course.sessions || course.sessions.length === 0) && (
-                        <p className="mt-1 text-[9px] font-semibold opacity-60">
-                          Auto slot
-                        </p>
-                      )}
                     </div>
                   );
                 })

@@ -37,6 +37,7 @@ interface CourseContextType {
 const CourseContext = createContext<CourseContextType | undefined>(undefined);
 
 const convertDbCourseToCourse = (course: DatabaseCourse): Course => {
+  console.log(`[CourseContext] Converting "${course.title}": Day=${course.day}, Start=${course.startTime}, End=${course.endTime}`);
   const sessions: CourseSession[] =
     course.day && course.startTime && course.endTime
       ? [
@@ -122,16 +123,35 @@ export const CourseProvider: React.FC<{ children: React.ReactNode }> = ({
   const checkClash = (
     newCourse: Course
   ): { hasClash: boolean; clashingCourse?: string } => {
+    console.log(`[CourseContext] Checking clash for "${newCourse.title}"...`);
+    
+    if (!newCourse.sessions || newCourse.sessions.length === 0) {
+      console.log(`[CourseContext] Course "${newCourse.title}" has NO sessions data.`);
+      return { hasClash: false };
+    }
+
+    const timeToMinutes = (timeStr: string) => {
+      const [hours, minutes] = timeStr.split(":").map(Number);
+      return hours * 60 + minutes;
+    };
+
     for (const enrolled of enrolledCourses) {
+      console.log(`[CourseContext] Comparing with enrolled: "${enrolled.title}" (${enrolled.sessions.length} sessions)`);
       for (const enrolledSession of enrolled.sessions) {
         for (const newSession of newCourse.sessions) {
+          console.log(`[CourseContext] Days: Enrolled=${enrolledSession.day}, New=${newSession.day}`);
+          
           if (enrolledSession.day === newSession.day) {
-            const start1 = enrolledSession.startTime;
-            const end1 = enrolledSession.endTime;
-            const start2 = newSession.startTime;
-            const end2 = newSession.endTime;
+            const start1 = timeToMinutes(enrolledSession.startTime);
+            const end1 = timeToMinutes(enrolledSession.endTime);
+            const start2 = timeToMinutes(newSession.startTime);
+            const end2 = timeToMinutes(newSession.endTime);
 
+            console.log(`[CourseContext] Times: [${start1}-${end1}] vs [${start2}-${end2}]`);
+
+            // Overlap logic: (StartA < EndB) AND (StartB < EndA)
             if (start1 < end2 && start2 < end1) {
+              console.log(`[CourseContext] >> CLASH DETECTED << with ${enrolled.title}`);
               return {
                 hasClash: true,
                 clashingCourse: enrolled.title,
@@ -168,41 +188,15 @@ export const CourseProvider: React.FC<{ children: React.ReactNode }> = ({
       return { success: false, message: "Already enrolled in this course" };
     }
 
-    if (
-      databaseCourse.prerequisites &&
-      databaseCourse.prerequisites.length > 0
-    ) {
-      const missingPrerequisites = databaseCourse.prerequisites.filter(
-        (prereq) => {
-          const prereqId = String(prereq.prerequisiteCourse.id);
-
-          return !enrolledCourses.some(
-            (enrolled) => enrolled.id === prereqId
-          );
-        }
-      );
-
-      if (missingPrerequisites.length > 0) {
-        const missingNames = missingPrerequisites
-          .map(
-            (p) =>
-              `${p.prerequisiteCourse.courseCode} - ${p.prerequisiteCourse.title}`
-          )
-          .join(", ");
-
-        return {
-          success: false,
-          message: `Missing prerequisite: ${missingNames}`,
-        };
-      }
-    }
-
+    // Clash Check
     const clash = checkClash(courseToAdd);
 
     if (clash.hasClash) {
+      const msg = `Unable to add ${courseToAdd.title}. It clashes with your enrolled course: ${clash.clashingCourse}.`;
+      window.alert(msg); // Forced browser popup
       return {
         success: false,
-        message: `Clash detected with ${clash.clashingCourse}`,
+        message: msg,
       };
     }
 

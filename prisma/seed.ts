@@ -9,71 +9,99 @@ const adapter = new PrismaPg({
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  await prisma.course.createMany({
-  data: [
+  console.log("Seeding courses...");
+  
+  const coursesData = [
     // Fall 2023 - Semester 1
     {
       courseCode: "CE119",
       title: "Computing Fundamentals",
-      instructor: "TBA",
+      instructor: "Dr. Ahmed",
       credits: 3,
       semester: 1,
+      day: "Monday",
+      startTime: "09:00",
+      endTime: "10:30",
     },
     {
       courseCode: "CE119L",
       title: "Computing Fundamentals Lab",
-      instructor: "TBA",
+      instructor: "Engr. Sarah",
       credits: 1,
       semester: 1,
+      day: "Monday",
+      startTime: "10:30",
+      endTime: "12:00",
     },
     {
       courseCode: "CE125",
       title: "Computer Engineering Workshop Lab",
-      instructor: "TBA",
+      instructor: "Engr. Bilal",
       credits: 1,
       semester: 1,
+      day: "Tuesday",
+      startTime: "09:00",
+      endTime: "11:00",
     },
     {
       courseCode: "CE129",
       title: "Occupational Health and Safety",
-      instructor: "TBA",
+      instructor: "Dr. Fatima",
       credits: 1,
       semester: 1,
+      day: "Wednesday",
+      startTime: "09:00",
+      endTime: "10:30",
     },
     {
       courseCode: "HS101",
       title: "Islamic Studies",
-      instructor: "TBA",
+      instructor: "Prof. Hassan",
       credits: 2,
       semester: 1,
+      day: "Wednesday",
+      startTime: "10:30",
+      endTime: "12:00",
     },
     {
       courseCode: "HS119",
       title: "Functional English",
-      instructor: "TBA",
+      instructor: "Ms. Zainab",
       credits: 2,
       semester: 1,
+      day: "Thursday",
+      startTime: "09:00",
+      endTime: "10:30",
     },
     {
       courseCode: "MS103",
       title: "Calculus and Analytical Geometry",
-      instructor: "TBA",
+      instructor: "Dr. Usman",
       credits: 3,
       semester: 1,
+      day: "Thursday",
+      startTime: "10:30",
+      endTime: "12:00",
     },
     {
       courseCode: "MS112L",
       title: "Applied Physics Lab",
-      instructor: "TBA",
+      instructor: "Engr. Ali",
       credits: 1,
       semester: 1,
+      day: "Friday",
+      startTime: "09:00",
+      endTime: "11:00",
     },
     {
       courseCode: "MS112T",
       title: "Applied Physics",
-      instructor: "TBA",
+      instructor: "Dr. Kamran",
       credits: 2,
       semester: 1,
+      day: "Friday",
+      startTime: "11:00",
+      endTime: "12:30",
     },
 
     // Spring 2024 - Semester 2
@@ -83,6 +111,9 @@ async function main() {
       instructor: "TBA",
       credits: 1,
       semester: 2,
+      day: "Monday",
+      startTime: "12:00",
+      endTime: "14:00",
     },
     {
       courseCode: "CE116T",
@@ -90,6 +121,9 @@ async function main() {
       instructor: "TBA",
       credits: 3,
       semester: 2,
+      day: "Monday",
+      startTime: "14:00",
+      endTime: "15:30",
     },
     {
       courseCode: "EE122L",
@@ -97,6 +131,9 @@ async function main() {
       instructor: "TBA",
       credits: 1,
       semester: 2,
+      day: "Tuesday",
+      startTime: "11:00",
+      endTime: "13:00",
     },
     {
       courseCode: "EE122T",
@@ -104,6 +141,9 @@ async function main() {
       instructor: "TBA",
       credits: 3,
       semester: 2,
+      day: "Tuesday",
+      startTime: "13:00",
+      endTime: "14:30",
     },
     {
       courseCode: "EE125T",
@@ -111,6 +151,9 @@ async function main() {
       instructor: "TBA",
       credits: 3,
       semester: 2,
+      day: "Wednesday",
+      startTime: "12:00",
+      endTime: "13:30",
     },
     {
       courseCode: "EE125L",
@@ -118,6 +161,9 @@ async function main() {
       instructor: "TBA",
       credits: 1,
       semester: 2,
+      day: "Wednesday",
+      startTime: "13:30",
+      endTime: "15:30",
     },
     {
       courseCode: "HS127",
@@ -125,6 +171,9 @@ async function main() {
       instructor: "TBA",
       credits: 2,
       semester: 2,
+      day: "Thursday",
+      startTime: "12:00",
+      endTime: "13:30",
     },
     {
       courseCode: "HS223",
@@ -132,6 +181,9 @@ async function main() {
       instructor: "TBA",
       credits: 2,
       semester: 2,
+      day: "Thursday",
+      startTime: "13:30",
+      endTime: "15:00",
     },
     {
       courseCode: "MS109",
@@ -139,6 +191,9 @@ async function main() {
       instructor: "TBA",
       credits: 3,
       semester: 2,
+      day: "Friday",
+      startTime: "12:30",
+      endTime: "14:00",
     },
 
     // Fall 2024 - Semester 3
@@ -148,6 +203,9 @@ async function main() {
       instructor: "TBA",
       credits: 1,
       semester: 3,
+      day: "Monday",
+      startTime: "15:30",
+      endTime: "17:30",
     },
     {
       courseCode: "CE215T",
@@ -155,6 +213,9 @@ async function main() {
       instructor: "TBA",
       credits: 3,
       semester: 3,
+      day: "Tuesday",
+      startTime: "14:30",
+      endTime: "16:00",
     },
     {
       courseCode: "CE216",
@@ -162,6 +223,9 @@ async function main() {
       instructor: "TBA",
       credits: 3,
       semester: 3,
+      day: "Wednesday",
+      startTime: "15:30",
+      endTime: "17:00",
     },
     {
       courseCode: "CE225L",
@@ -169,6 +233,9 @@ async function main() {
       instructor: "TBA",
       credits: 1,
       semester: 3,
+      day: "Thursday",
+      startTime: "15:00",
+      endTime: "17:00",
     },
     {
       courseCode: "CE225T",
@@ -176,6 +243,9 @@ async function main() {
       instructor: "TBA",
       credits: 3,
       semester: 3,
+      day: "Friday",
+      startTime: "14:00",
+      endTime: "15:30",
     },
     {
       courseCode: "HS401",
@@ -183,6 +253,9 @@ async function main() {
       instructor: "TBA",
       credits: 2,
       semester: 3,
+      day: "Monday",
+      startTime: "08:00",
+      endTime: "09:00",
     },
     {
       courseCode: "MS202",
@@ -190,6 +263,9 @@ async function main() {
       instructor: "TBA",
       credits: 3,
       semester: 3,
+      day: "Tuesday",
+      startTime: "08:00",
+      endTime: "09:00",
     },
 
     // Spring 2025 - Semester 4
@@ -199,6 +275,9 @@ async function main() {
       instructor: "TBA",
       credits: 4,
       semester: 4,
+      day: "Wednesday",
+      startTime: "08:00",
+      endTime: "10:00",
     },
     {
       courseCode: "CE205L",
@@ -206,6 +285,9 @@ async function main() {
       instructor: "TBA",
       credits: 1,
       semester: 4,
+      day: "Thursday",
+      startTime: "08:00",
+      endTime: "10:00",
     },
     {
       courseCode: "CE205T",
@@ -213,6 +295,9 @@ async function main() {
       instructor: "TBA",
       credits: 3,
       semester: 4,
+      day: "Friday",
+      startTime: "08:00",
+      endTime: "10:00",
     },
     {
       courseCode: "CE207L",
@@ -220,6 +305,9 @@ async function main() {
       instructor: "TBA",
       credits: 1,
       semester: 4,
+      day: "Monday",
+      startTime: "10:00",
+      endTime: "12:00",
     },
     {
       courseCode: "CE207T",
@@ -227,6 +315,9 @@ async function main() {
       instructor: "TBA",
       credits: 3,
       semester: 4,
+      day: "Tuesday",
+      startTime: "10:00",
+      endTime: "11:30",
     },
     {
       courseCode: "CE220L",
@@ -234,6 +325,9 @@ async function main() {
       instructor: "TBA",
       credits: 1,
       semester: 4,
+      day: "Wednesday",
+      startTime: "10:00",
+      endTime: "12:00",
     },
     {
       courseCode: "CE220T",
@@ -241,6 +335,9 @@ async function main() {
       instructor: "TBA",
       credits: 3,
       semester: 4,
+      day: "Thursday",
+      startTime: "10:00",
+      endTime: "11:30",
     },
     {
       courseCode: "MS215",
@@ -248,6 +345,9 @@ async function main() {
       instructor: "TBA",
       credits: 2,
       semester: 4,
+      day: "Friday",
+      startTime: "10:00",
+      endTime: "11:30",
     },
 
     // Fall 2025 - Semester 5
@@ -257,6 +357,9 @@ async function main() {
       instructor: "TBA",
       credits: 1,
       semester: 5,
+      day: "Monday",
+      startTime: "14:00",
+      endTime: "16:00",
     },
     {
       courseCode: "CE303T",
@@ -264,6 +367,9 @@ async function main() {
       instructor: "TBA",
       credits: 3,
       semester: 5,
+      day: "Tuesday",
+      startTime: "14:00",
+      endTime: "15:30",
     },
     {
       courseCode: "CE318L",
@@ -271,6 +377,9 @@ async function main() {
       instructor: "TBA",
       credits: 1,
       semester: 5,
+      day: "Wednesday",
+      startTime: "14:00",
+      endTime: "16:00",
     },
     {
       courseCode: "CE318T",
@@ -278,6 +387,9 @@ async function main() {
       instructor: "TBA",
       credits: 3,
       semester: 5,
+      day: "Thursday",
+      startTime: "14:00",
+      endTime: "15:30",
     },
     {
       courseCode: "CE320",
@@ -285,6 +397,9 @@ async function main() {
       instructor: "TBA",
       credits: 3,
       semester: 5,
+      day: "Friday",
+      startTime: "14:00",
+      endTime: "15:30",
     },
     {
       courseCode: "CE320L",
@@ -292,6 +407,9 @@ async function main() {
       instructor: "TBA",
       credits: 1,
       semester: 5,
+      day: "Monday",
+      startTime: "16:00",
+      endTime: "18:00",
     },
     {
       courseCode: "CE321L",
@@ -299,6 +417,9 @@ async function main() {
       instructor: "TBA",
       credits: 1,
       semester: 5,
+      day: "Tuesday",
+      startTime: "16:00",
+      endTime: "18:00",
     },
     {
       courseCode: "CE321T",
@@ -306,6 +427,9 @@ async function main() {
       instructor: "TBA",
       credits: 3,
       semester: 5,
+      day: "Wednesday",
+      startTime: "16:00",
+      endTime: "17:30",
     },
     {
       courseCode: "HS301",
@@ -313,98 +437,24 @@ async function main() {
       instructor: "TBA",
       credits: 2,
       semester: 5,
+      day: "Thursday",
+      startTime: "16:00",
+      endTime: "17:30",
     },
-  ],
-  skipDuplicates: true,
-});
-const ce116t = await prisma.course.findUnique({
-  where: { courseCode: "CE116T" },
-});
+  ];
 
-const ce225t = await prisma.course.findUnique({
-  where: { courseCode: "CE225T" },
-});
+  for (const course of coursesData) {
+    await prisma.course.upsert({
+      where: { courseCode: course.courseCode },
+      update: course,
+      create: course,
+    });
+  }
 
-const ce205t = await prisma.course.findUnique({
-  where: { courseCode: "CE205T" },
-});
-
-const ce303t = await prisma.course.findUnique({
-  where: { courseCode: "CE303T" },
-});
-
-const ce321t = await prisma.course.findUnique({
-  where: { courseCode: "CE321T" },
-});
-
-if (ce116t && ce225t) {
-  await prisma.prerequisite.upsert({
-    where: {
-      courseId_prerequisiteCourseId: {
-        courseId: ce225t.id,
-        prerequisiteCourseId: ce116t.id,
-      },
-    },
-    update: {},
-    create: {
-      courseId: ce225t.id,
-      prerequisiteCourseId: ce116t.id,
-    },
-  });
-}
-
-if (ce225t && ce205t) {
-  await prisma.prerequisite.upsert({
-    where: {
-      courseId_prerequisiteCourseId: {
-        courseId: ce205t.id,
-        prerequisiteCourseId: ce225t.id,
-      },
-    },
-    update: {},
-    create: {
-      courseId: ce205t.id,
-      prerequisiteCourseId: ce225t.id,
-    },
-  });
-}
-
-if (ce205t && ce303t) {
-  await prisma.prerequisite.upsert({
-    where: {
-      courseId_prerequisiteCourseId: {
-        courseId: ce303t.id,
-        prerequisiteCourseId: ce205t.id,
-      },
-    },
-    update: {},
-    create: {
-      courseId: ce303t.id,
-      prerequisiteCourseId: ce205t.id,
-    },
-  });
-}
-
-if (ce303t && ce321t) {
-  await prisma.prerequisite.upsert({
-    where: {
-      courseId_prerequisiteCourseId: {
-        courseId: ce321t.id,
-        prerequisiteCourseId: ce303t.id,
-      },
-    },
-    update: {},
-    create: {
-      courseId: ce321t.id,
-      prerequisiteCourseId: ce303t.id,
-    },
-  });
-}
-
-console.log("Prerequisites seeded successfully");
-  console.log("Courses seeded successfully");
+  console.log("Courses seeded/updated successfully");
 
   // Seed Prerequisites
+  console.log("Seeding prerequisites...");
   const allCourses = await prisma.course.findMany();
   const getCourseId = (code: string) => allCourses.find((c) => c.courseCode === code)?.id;
 

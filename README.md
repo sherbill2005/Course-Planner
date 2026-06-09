@@ -35,7 +35,6 @@ The objective of this project is to design and develop a web-based University Co
 - **Task**: Secure these routes so only the logged-in user can modify their own schedule.
 
 ## Shared references
-- `<auth-module-root>` currently maps to `./Huzaifa` from repository root.
 - **Note**: Always run `npx prisma generate` after pulling changes to ensure the local client matches the cloud schema.
 
 ---
@@ -51,17 +50,16 @@ cd Course-Planner
 ```
 
 ### 2. Install Dependencies
-Navigate to the module root and install all required packages:
+Install all required packages in the root directory:
 ```bash
-cd Huzaifa
 npm install
 ```
 
 ### 3. Environment Setup (.env)
-Create a file named `.env` in the `Huzaifa/` directory. Copy and paste the shared Neon connection string:
+Create a file named `.env` in the root directory. Copy and paste the shared Neon connection string:
 
 ```env
-# Huzaifa/.env
+# .env
 DATABASE_URL="postgresql://neondb_owner:npg_NbKs1QuY7AqI@ep-delicate-snow-ao9x3f6p.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
 ```
 *(This connects you to our shared Cloud Database so everyone sees the same data.)*
